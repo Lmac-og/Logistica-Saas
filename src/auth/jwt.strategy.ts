@@ -13,11 +13,12 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
   }
 
   async validate(payload: any) {
-    // Esse retorno será injetado pelo decorator @CurrentUser()
+    // Esse retorno será injetado pelo decorator @CurrentUser() ou disponível em request.user
     return {
       userId: payload.sub,
       email: payload.email,
       role: payload.role,
+      companyId: payload.companyId, // 👈 ESSENCIAL para Multi-Tenancy
     };
   }
 }

@@ -1,13 +1,21 @@
-import { Entity, PrimaryGeneratedColumn, Column } from 'typeorm';
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  ManyToOne,
+  JoinColumn,
+} from 'typeorm';
 import { Exclude } from 'class-transformer';
+import { Company } from '../../companies/company.entity';
 
 export enum UserRole {
+  SUPER_ADMIN = 'super_admin', // importante
   ADMIN = 'admin',
   MOTORISTA = 'motorista',
   AJUDANTE = 'ajudante',
 }
 
-@Entity()
+@Entity('users')
 export class User {
   @PrimaryGeneratedColumn('uuid')
   id: string;
@@ -18,7 +26,7 @@ export class User {
   @Column({ unique: true })
   email: string;
 
-  @Exclude() // 👈 ISSO AQUI ESCONDE A SENHA NA RESPOSTA
+  @Exclude()
   @Column()
   password: string;
 
@@ -28,4 +36,14 @@ export class User {
     default: UserRole.AJUDANTE,
   })
   role: UserRole;
+
+  @ManyToOne(() => Company, (company) => company.users, {
+    nullable: false,
+    onDelete: 'CASCADE',
+  })
+  @JoinColumn({ name: 'companyId' })
+  company: Company;
+
+  @Column()
+  companyId: string;
 }

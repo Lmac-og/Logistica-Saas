@@ -8,17 +8,20 @@ import { CurrentUser } from '../auth/current-user.decorator';
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
-  // Protege a rota com JWT
+  // 🔐 LISTAR USUÁRIOS DA MESMA EMPRESA
   @UseGuards(JwtAuthGuard)
   @Get()
   findAll(@CurrentUser() user: any) {
-    console.log('Usuário logado:', user); // opcional, só para teste
-    return this.usersService.findAll();
+    return this.usersService.findAll(user.companyId);
   }
 
-  // Rota de criação de usuário aberta (registro)
+  // 🔐 CRIAR USUÁRIO (atualizado)
+  @UseGuards(JwtAuthGuard)
   @Post()
-  create(@Body() createUserDto: CreateUserDto) {
-    return this.usersService.create(createUserDto);
+  create(
+    @Body() createUserDto: CreateUserDto,
+    @CurrentUser() user: any,
+  ) {
+    return this.usersService.create(createUserDto, user);
   }
 }

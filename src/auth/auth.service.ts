@@ -27,10 +27,14 @@ export class AuthService {
       throw new UnauthorizedException('Credenciais inválidas');
     }
 
+    /**
+     * 🔐 Payload preparado para Multi-Tenancy
+     */
     const payload = {
       sub: user.id,
       email: user.email,
       role: user.role,
+      companyId: user.company.id, // 👈 ESSENCIAL
     };
 
     return {
